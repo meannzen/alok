@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct {
   char *buffer;
@@ -27,20 +28,33 @@ void free_input_buffer(InputBuffer *input) {
 }
 
 void read_input(InputBuffer *input) {
-  size_t byte_read = getline(&(input->buffer), &(input->buffer_len), stdin);
+  ssize_t byte_read = getline(&(input->buffer), &(input->buffer_len), stdin);
+  if (byte_read == -1) {
+    free_input_buffer(input);
+    exit(1);
+  }
   input->input_len = byte_read - 1;
-  input->buffer[byte_read - 1] = 0;
+  input->buffer[byte_read - 1] = '\0';
 }
 
 int main(int argc, char *argv[]) {
   setbuf(stdout, NULL);
+
+  InputBuffer *input = new_input_buffer();
   for (;;) {
     printf("$ ");
-    InputBuffer *input = new_input_buffer();
     read_input(input);
+    if (input->input_len == 0)
+      continue;
+
+    if (strcmp(input->buffer, "exit") == 0) {
+      break;
+    }
+
     printf("%s: command not found\n", input->buffer);
-    free_input_buffer(input);
   }
+
+  free_input_buffer(input);
 
   return 0;
 }
