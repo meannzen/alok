@@ -59,6 +59,19 @@ int main(int argc, char *argv[]) {
 	  continue;
     }
 
+    if(strncmp(input->buffer, "type ", 5)== 0)  {
+	    if(strcmp(input->buffer + 5, "exit") == 0 
+			    || strcmp(input->buffer + 5, "echo") == 0 
+			    || strcmp(input->buffer + 5, "type") == 0) {
+
+		    printf("%s is a shell builtin\n", input->buffer + 5);
+	    } else {
+                printf("%s: not found\n", input->buffer + 5);
+	    }
+
+	   continue;
+    }
+
     printf("%s: command not found\n", input->buffer);
   }
 
