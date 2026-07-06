@@ -4,34 +4,35 @@
 #include <stddef.h>
 
 enum alok_token_type {
-  STRING,
-  PIPE,
-  SEMICOLON,
-  REDIRECT_IN,
-  REDIRECT_APPEND,
-  REDIRECT_OUT,
-  BACKGROUND,
-  ERROR,
-  EOF
+	STRING,
+	PIPE,
+	SEMICOLON,
+	REDIRECT_IN,
+	REDIRECT_APPEND,
+	REDIRECT_OUT,
+	BACKGROUND,
+	ERROR,
+	EOF
 };
 
 struct alok_token {
-  enum alok_token_type type;
-  union {
-    int fd;
-    /*
-     *  @start:  pointer to beginning of char
-     *  @len: the length of the array of char
-     */
-    struct {
-      const char *start;
-      size_t len;
-    };
+	enum alok_token_type type;
 
-  } value;
+	union {
+		int fd;
+		/*
+		 *  @start:  pointer to beginning of char
+		 *  @len: the length of the array of char
+		 */
+		struct {
+			const char *start;
+			size_t len;
+		};
+	} value;
 };
 
 void init_alok_lexer(const char *input);
+
 struct alok_token lexer();
 
 #endif

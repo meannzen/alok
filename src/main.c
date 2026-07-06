@@ -1,8 +1,8 @@
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 struct input_buffer {
 	char *buffer;
@@ -12,8 +12,7 @@ struct input_buffer {
 
 struct input_buffer *new_input_buffer()
 {
-	struct input_buffer *input =
-		(struct input_buffer *)malloc(sizeof(struct input_buffer));
+	struct input_buffer *input = (struct input_buffer *)malloc(sizeof(struct input_buffer));
 
 	if (!input) {
 		exit(1);
@@ -34,8 +33,7 @@ void free_input_buffer(struct input_buffer *input)
 
 void read_input(struct input_buffer *input)
 {
-	ssize_t byte_read =
-		getline(&(input->buffer), &(input->buffer_len), stdin);
+	ssize_t byte_read = getline(&(input->buffer), &(input->buffer_len), stdin);
 
 	if (byte_read == -1) {
 		free_input_buffer(input);
@@ -51,7 +49,7 @@ int main(int argc, char *argv[])
 	setbuf(stdout, NULL);
 	struct input_buffer *input = new_input_buffer();
 
-	const char *BUILT_IN[] = { "exit", "type", "echo" };
+	const char *BUILT_IN[] = {"exit", "type", "echo"};
 
 	const size_t build_len = sizeof(BUILT_IN) / sizeof(size_t);
 
@@ -72,11 +70,9 @@ int main(int argc, char *argv[])
 		if (strncmp(input->buffer, "type ", 5) == 0) {
 			bool found_build_in = false;
 			for (size_t i = 0; i < build_len; i++) {
-				if (strcmp(input->buffer + 5, BUILT_IN[i]) ==
-				    0) {
+				if (strcmp(input->buffer + 5, BUILT_IN[i]) == 0) {
 					found_build_in = true;
-					printf("%s is a shell builtin\n",
-					       input->buffer + 5);
+					printf("%s is a shell builtin\n", input->buffer + 5);
 					break;
 				}
 			}
