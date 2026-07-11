@@ -21,8 +21,8 @@ struct alok_token {
 	union {
 		int fd;
 		/*
-		 *  @start:  pointer to beginning of char
-		 *  @len: the length of the array of char
+		 *  @param start:  pointer to beginning of char
+		 *  @param len: the length of the array of char
 		 */
 		struct {
 			const char *start;

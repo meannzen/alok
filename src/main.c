@@ -1,14 +1,19 @@
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+#define MAX_PATH_LEN 1024
 
 struct input_buffer {
 	char *buffer;
 	size_t buffer_len;
 	size_t input_len;
 };
+
 
 struct input_buffer *new_input_buffer()
 {
@@ -58,7 +63,6 @@ int main(int argc, char *argv[])
 		read_input(input);
 		if (input->input_len == 0)
 			continue;
-
 		if (strcmp(input->buffer, "exit") == 0)
 			break;
 
@@ -76,8 +80,31 @@ int main(int argc, char *argv[])
 					break;
 				}
 			}
+			bool found = false;
+
 			if (!found_build_in) {
-				printf("%s: not found\n", input->buffer + 5);
+				char *path_env = getenv("PATH");
+				if(!path_env) {
+					printf("PATH environment variable not found");
+					return 1;
+				}
+				char *path_dup = strdup(path_env);
+				char *dir = strtok(path_dup, ":");
+				char full_path[MAX_PATH_LEN];
+				while (dir!=NULL) {
+					snprintf(full_path	, sizeof(full_path), "%s/%s",dir, input->buffer+5);
+					if(access(full_path, X_OK) == 0){
+						found = true;
+						printf("%s is %s\n", input->buffer+5, full_path);
+						break;
+					}
+				   dir = strtok(NULL, ":");
+				}
+				if(!found){
+			     	printf("%s: not found\n", input->buffer + 5);
+				}
+
+				free(path_dup);
 			}
 			continue;
 		}

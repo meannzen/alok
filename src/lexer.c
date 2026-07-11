@@ -42,8 +42,7 @@ static bool is_word_char(char c)
 static void skip_white_space()
 {
 	while (!is_end_at()) {
-		char c = peak();
-		if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
+		char c = peak(); if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
 			advance();
 		} else {
 			break;
