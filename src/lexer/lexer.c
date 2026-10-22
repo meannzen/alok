@@ -42,7 +42,8 @@ static bool is_word_char(char c)
 static void skip_white_space()
 {
 	while (!is_end_at()) {
-		char c = peak(); if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
+		char c = peak();
+		if (c == ' ' || c == '\r' || c == '\n' || c == '\t') {
 			advance();
 		} else {
 			break;
@@ -50,48 +51,41 @@ static void skip_white_space()
 	}
 }
 
+/* Token covers the raw span, quotes included; see parse.c for decoding. */
 static struct alok_token parse_word()
 {
 	struct alok_token token;
 	token.type = STRING;
 	token.value.start = lex.current;
-	token.value.len = 0;
 
 	while (!is_end_at()) {
 		char c = peak();
 		if (c == '\'') {
 			advance();
-			while (!is_end_at() && peak() != '\'') {
-				token.value.len++;
+			while (!is_end_at() && peak() != '\'')
 				advance();
-			}
-
 			if (!is_end_at())
 				advance();
 		} else if (c == '"') {
 			advance();
 			while (!is_end_at() && peak() != '"') {
-				if (peak() == '\\') {
+				if (peak() == '\\')
 					advance();
-					if (!is_end_at()) {
-						token.value.len++;
-						advance();
-					}
-				} else {
-					token.value.len++;
-					advance();
-				}
+				advance();
 			}
 			if (!is_end_at())
 				advance();
+		} else if (c == '\\') {
+			advance();
+			advance();
 		} else if (is_word_char(c)) {
-			token.value.len++;
 			advance();
 		} else {
 			break;
 		}
 	}
 
+	token.value.len = lex.current - token.value.start;
 	return token;
 }
 
@@ -110,7 +104,7 @@ struct alok_token lexer()
 	lex.start = lex.current;
 
 	if (is_end_at()) {
-		token.type = EOF;
+		token.type = TOKEN_EOF;
 		return token;
 	}
 
@@ -119,7 +113,8 @@ struct alok_token lexer()
 		int fd_accumulator = 0;
 
 		while (!is_end_at() && is_digit(peak())) {
-			fd_accumulator = (fd_accumulator * 10) + (advance() - '0');
+			fd_accumulator =
+				(fd_accumulator * 10) + (advance() - '0');
 		}
 
 		char next_c = peak();
