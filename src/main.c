@@ -1,5 +1,5 @@
 #include "debug/debug.h"
-#include "lexer/lexer.h"
+#include "parser/parser.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
